@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>매일 턱걸이 · 팔굽혀펴기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F5F5F1;
+    --surface: #FFFFFF;
+    --surface-2: #EFEEE8;
+    --ink: #1C1B1A;
+    --ink-soft: #6B6963;
+    --ink-faint: #A6A399;
+    --line: #E3E1D9;
+    --pullup: #4F46E5;
+    --pullup-soft: #EDECFC;
+    --pushup: #E85A3B;
+    --pushup-soft: #FCE9E3;
+    --up: #1E9E6B;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--font-body);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .app{
+    width:100%;
+    max-width:460px;
+    min-height:100vh;
+    background:var(--bg);
+    padding:28px 20px 60px;
+    position:relative;
+  }
+
+  header.top{margin-bottom:22px;}
+  .top .date{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-bottom:4px;
+  }
+  .top h1{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:24px;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+
+  .cards{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    margin-bottom:26px;
+  }
+
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius-lg);
+    padding:20px;
+  }
+
+  .card-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:16px;
+  }
+  .card-head .label{
+    font-size:15px;
+    font-weight:600;
+  }
+  .chip{
+    font-size:12px;
+    font-weight:700;
+    padding:4px 9px;
+    border-radius:999px;
+    white-space:nowrap;
+  }
+  .chip.pos{background:#E4F5EC; color:var(--up);}
+  .chip.neg{background:var(--surface-2); color:var(--ink-soft);}
+  .chip.flat{background:var(--surface-2); color:var(--ink-soft);}
+  .chip.none{background:var(--surface-2); color:var(--ink-faint);}
+
+  .compare-row{
+    display:flex;
+    align-items:flex-end;
+    gap:14px;
+    margin-bottom:16px;
+  }
+  .compare-col{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .compare-col .cl{
+    font-size:11.5px;
+    color:var(--ink-faint);
+    font-weight:500;
+  }
+  .compare-col.yesterday .cv{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:22px;
+    color:var(--ink-faint);
+  }
+  .compare-col.today .cv{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:40px;
+    line-height:1;
+  }
+  .card.pullup .compare-col.today .cv{color:var(--pullup);}
+  .card.pushup .compare-col.today .cv{color:var(--pushup);}
+  .arrow-sep{
+    color:var(--ink-faint);
+    font-size:16px;
+    padding-bottom:6px;
+  }
+
+  .actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .btn-add{
+    border:none;
+    border-radius:10px;
+    padding:10px 0;
+    width:56px;
+    font-family:var(--font-body);
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    transition:transform .1s ease, opacity .15s ease;
+  }
+  .btn-add:active{transform:scale(0.94);}
+  .card.pullup .btn-add{background:var(--pullup-soft); color:var(--pullup);}
+  .card.pushup .btn-add{background:var(--pushup-soft); color:var(--pushup);}
+
+  .btn-custom{
+    border:1px solid var(--line);
+    background:transparent;
+    border-radius:10px;
+    padding:10px 12px;
+    font-family:var(--font-body);
+    font-weight:600;
+    font-size:14px;
+    color:var(--ink-soft);
+    cursor:pointer;
+  }
+  .btn-reset{
+    border:none;
+    background:transparent;
+    color:var(--ink-faint);
+    font-size:12px;
+    text-decoration:underline;
+    cursor:pointer;
+    padding:0;
+    margin-top:14px;
+  }
+
+  section.cal{margin-bottom:26px;}
+  .cal-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:12px;
+  }
+  .cal-head .cal-title{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:17px;
+  }
+  .cal-nav{
+    display:flex;
+    gap:6px;
+  }
+  .cal-nav button{
+    width:30px;height:30px;
+    border-radius:9px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    color:var(--ink-soft);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+  }
+  .cal-nav button:disabled{opacity:.35; cursor:default;}
+
+  .cal-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius-lg);
+    padding:16px;
+  }
+  .cal-weekdays{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    margin-bottom:6px;
+  }
+  .cal-weekdays span{
+    text-align:center;
+    font-size:11px;
+    color:var(--ink-faint);
+    font-weight:500;
+  }
+  .cal-grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:3px;
+  }
+  .cal-cell{
+    aspect-ratio:1;
+    border-radius:9px;
+    background:var(--surface-2);
+    padding:5px 4px 3px;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+  .cal-cell.empty{visibility:hidden;}
+  .cal-cell.today{box-shadow:inset 0 0 0 1.5px var(--ink);}
+  .cal-cell .dnum{
+    font-size:10.5px;
+    color:var(--ink-faint);
+    font-weight:500;
+  }
+  .cal-cell.has-log{background:var(--surface);}
+  .cal-cell .dcounts{
+    margin-top:auto;
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+  }
+  .cal-cell .dcounts span{
+    font-size:9.5px;
+    font-weight:700;
+    line-height:1.15;
+  }
+  .cal-cell .dcounts .p{color:var(--pullup);}
+  .cal-cell .dcounts .u{color:var(--pushup);}
+
+  .cal-totals{
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px solid var(--line);
+    display:flex;
+    gap:16px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+  }
+  .cal-totals b{color:var(--ink); font-weight:700;}
+
+  details.settings{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius-lg);
+    overflow:hidden;
+  }
+  details.settings summary{
+    list-style:none;
+    padding:16px 20px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  details.settings summary::-webkit-details-marker{display:none;}
+  summary .chev{transition:transform .2s ease; color:var(--ink-soft);}
+  details[open] summary .chev{transform:rotate(180deg);}
+
+  .settings-body{
+    padding:0 20px 20px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .setting-row{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .setting-row label{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    font-weight:500;
+  }
+
+  .toggle-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .switch{
+    width:42px;
+    height:24px;
+    border-radius:999px;
+    background:var(--surface-2);
+    position:relative;
+    cursor:pointer;
+    border:none;
+    padding:0;
+    flex-shrink:0;
+    transition:background .2s ease;
+  }
+  .switch.on{background:var(--up);}
+  .switch .knob{
+    position:absolute;
+    top:3px; left:3px;
+    width:18px;height:18px;
+    border-radius:50%;
+    background:#fff;
+    transition:transform .2s ease;
+    box-shadow:0 1px 2px rgba(0,0,0,.2);
+  }
+  .switch.on .knob{transform:translateX(18px);}
+
+  input[type="time"]{
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:8px 12px;
+    font-family:var(--font-body);
+    font-size:14px;
+    font-weight:600;
+    color:var(--ink);
+    background:transparent;
+    width:100%;
+    outline:none;
+  }
+
+  .note{
+    font-size:11.5px;
+    color:var(--ink-soft);
+    line-height:1.5;
+    margin:0;
+  }
+
+  .sync-status{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+  }
+  .sync-dot{
+    width:7px;height:7px;
+    border-radius:50%;
+    background:var(--ink-faint);
+    flex-shrink:0;
+  }
+  .sync-dot.on{background:var(--up);}
+
+  .toast{
+    position:fixed;
+    bottom:24px;
+    left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:var(--ink);
+    color:#fff;
+    padding:11px 18px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:500;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s ease, transform .25s ease;
+    z-index:50;
+    white-space:nowrap;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  @media (max-width:340px){
+    .btn-add{width:48px;}
+  }
+</style>
+
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#F5F5F1">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icon-192.png">
+</head>
+<body>
+<div class="app">
+
+  <header class="top">
+    <div class="date" id="todayLabel">-</div>
+    <h1>오늘의 운동</h1>
+  </header>
+
+  <div class="cards">
+
+    <div class="card pullup">
+      <div class="card-head">
+        <span class="label">턱걸이</span>
+        <span class="chip none" id="pullupChip">-</span>
+      </div>
+      <div class="compare-row">
+        <div class="compare-col yesterday">
+          <span class="cl">어제</span>
+          <span class="cv" id="pullupYesterday">0</span>
+        </div>
+        <div class="arrow-sep">→</div>
+        <div class="compare-col today">
+          <span class="cl">오늘</span>
+          <span class="cv" id="pullupToday">0</span>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn-add" data-ex="pullup" data-amt="1">+1</button>
+        <button class="btn-add" data-ex="pullup" data-amt="3">+3</button>
+        <button class="btn-add" data-ex="pullup" data-amt="5">+5</button>
+        <button class="btn-custom" data-ex="pullup" data-custom="1">직접</button>
+      </div>
+      <button class="btn-reset" data-ex="pullup" data-reset="1">오늘 기록 지우기</button>
+    </div>
+
+    <div class="card pushup">
+      <div class="card-head">
+        <span class="label">팔굽혀펴기</span>
+        <span class="chip none" id="pushupChip">-</span>
+      </div>
+      <div class="compare-row">
+        <div class="compare-col yesterday">
+          <span class="cl">어제</span>
+          <span class="cv" id="pushupYesterday">0</span>
+        </div>
+        <div class="arrow-sep">→</div>
+        <div class="compare-col today">
+          <span class="cl">오늘</span>
+          <span class="cv" id="pushupToday">0</span>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn-add" data-ex="pushup" data-amt="5">+5</button>
+        <button class="btn-add" data-ex="pushup" data-amt="10">+10</button>
+        <button class="btn-add" data-ex="pushup" data-amt="20">+20</button>
+        <button class="btn-custom" data-ex="pushup" data-custom="1">직접</button>
+      </div>
+      <button class="btn-reset" data-ex="pushup" data-reset="1">오늘 기록 지우기</button>
+    </div>
+
+  </div>
+
+  <section class="cal">
+    <div class="cal-head">
+      <span class="cal-title" id="calTitle">-</span>
+      <div class="cal-nav">
+        <button id="calPrev" aria-label="이전 달">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button id="calNext" aria-label="다음 달">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="cal-card">
+      <div class="cal-weekdays">
+        <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="cal-totals" id="calTotals"></div>
+    </div>
+  </section>
+
+  <details class="settings" id="settingsPanel">
+    <summary>
+      알림 &amp; 동기화
+      <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </summary>
+    <div class="settings-body">
+
+      <div class="setting-row">
+        <div class="toggle-row">
+          <label style="margin:0;">운동 알림 받기</label>
+          <button class="switch" id="notifSwitch"><span class="knob"></span></button>
+        </div>
+        <input type="time" id="reminderTime" value="19:00">
+        <p class="note">설정한 시각까지 오늘 기록이 하나도 없으면 알림을 보내드려요. 이 페이지 탭이 열려 있을 때만 동작하니, 알림을 받으려면 탭을 켜두는 걸 추천해요.</p>
+      </div>
+
+      <div class="setting-row">
+        <label style="margin:0;">기기 간 동기화</label>
+        <div class="sync-status">
+          <span class="sync-dot" id="syncDot"></span>
+          <span id="syncText">확인 중...</span>
+        </div>
+      </div>
+
+    </div>
+  </details>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  const STORAGE_KEY = 'fittrack_data_v2';
+
+  function todayStr(d){
+    d = d || new Date();
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
+  function ymKey(d){
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+  }
+
+  function defaultState(){
+    return {
+      logs: {},
+      reminderEnabled: false,
+      reminderTime: '19:00',
+      lastNotifiedDate: null,
+      updatedAt: 0
+    };
+  }
+
+  function normalize(data){
+    const d = Object.assign(defaultState(), data || {});
+    d.logs = d.logs || {};
+    return d;
+  }
+
+  function loadLocal(){
+    let raw;
+    try{ raw = localStorage.getItem(STORAGE_KEY); }catch(e){ raw = null; }
+    let data;
+    try{ data = raw ? JSON.parse(raw) : null; }catch(e){ data = null; }
+    return normalize(data);
+  }
+
+  function saveLocal(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+  }
+
+  let state = loadLocal();
+  let calendarDate = new Date(); // first-of-shown-month, day irrelevant
+  calendarDate.setDate(1);
+
+  const el = (id) => document.getElementById(id);
+  const KOR_DAYS = ['일','월','화','수','목','금','토'];
+
+  function formatDateLabel(d){
+    return (d.getMonth()+1)+'월 '+d.getDate()+'일 '+KOR_DAYS[d.getDay()]+'요일';
+  }
+
+  function getLog(dateStr){
+    if(!state.logs[dateStr]) state.logs[dateStr] = { pullup:0, pushup:0 };
+    return state.logs[dateStr];
+  }
+
+  function renderChip(elId, yesterday, today){
+    const chip = el(elId);
+    if(yesterday === null){
+      chip.textContent = '어제 기록 없음';
+      chip.className = 'chip none';
+      return;
+    }
+    const diff = today - yesterday;
+    if(diff > 0){
+      chip.textContent = '어제보다 +'+diff;
+      chip.className = 'chip pos';
+    } else if(diff < 0){
+      chip.textContent = '어제보다 '+diff;
+      chip.className = 'chip neg';
+    } else {
+      chip.textContent = '어제와 동일';
+      chip.className = 'chip flat';
+    }
+  }
+
+  function renderToday(){
+    const now = new Date();
+    const today = todayStr(now);
+    const yest = new Date(now); yest.setDate(yest.getDate()-1);
+    const yestStr = todayStr(yest);
+
+    el('todayLabel').textContent = formatDateLabel(now);
+
+    const tLog = getLog(today);
+    const yLog = state.logs[yestStr] || null;
+
+    el('pullupToday').textContent = tLog.pullup;
+    el('pullupYesterday').textContent = yLog ? yLog.pullup : 0;
+    renderChip('pullupChip', yLog ? yLog.pullup : null, tLog.pullup);
+
+    el('pushupToday').textContent = tLog.pushup;
+    el('pushupYesterday').textContent = yLog ? yLog.pushup : 0;
+    renderChip('pushupChip', yLog ? yLog.pushup : null, tLog.pushup);
+  }
+
+  function renderSettings(){
+    el('reminderTime').value = state.reminderTime;
+    el('notifSwitch').classList.toggle('on', state.reminderEnabled);
+  }
+
+  function renderCalendar(){
+    const y = calendarDate.getFullYear();
+    const m = calendarDate.getMonth();
+    el('calTitle').textContent = y+'년 '+(m+1)+'월';
+
+    const now = new Date();
+    const isCurrentMonth = (y === now.getFullYear() && m === now.getMonth());
+    el('calNext').disabled = isCurrentMonth;
+
+    const firstDay = new Date(y, m, 1);
+    const daysInMonth = new Date(y, m+1, 0).getDate();
+    const startDow = firstDay.getDay();
+
+    const grid = el('calGrid');
+    grid.innerHTML = '';
+
+    for(let i=0;i<startDow;i++){
+      const cell = document.createElement('div');
+      cell.className = 'cal-cell empty';
+      grid.appendChild(cell);
+    }
+
+    let monthPullup = 0, monthPushup = 0, activeDays = 0;
+
+    for(let day=1; day<=daysInMonth; day++){
+      const d = new Date(y, m, day);
+      const ds = todayStr(d);
+      const log = state.logs[ds];
+      const cell = document.createElement('div');
+      cell.className = 'cal-cell';
+      if(ds === todayStr(now)) cell.classList.add('today');
+
+      const dnum = document.createElement('span');
+      dnum.className = 'dnum';
+      dnum.textContent = day;
+      cell.appendChild(dnum);
+
+      if(log && (log.pullup > 0 || log.pushup > 0)){
+        cell.classList.add('has-log');
+        activeDays++;
+        monthPullup += log.pullup;
+        monthPushup += log.pushup;
+        const counts = document.createElement('div');
+        counts.className = 'dcounts';
+        if(log.pullup > 0){
+          const p = document.createElement('span');
+          p.className = 'p';
+          p.textContent = log.pullup;
+          counts.appendChild(p);
+        }
+        if(log.pushup > 0){
+          const u = document.createElement('span');
+          u.className = 'u';
+          u.textContent = log.pushup;
+          counts.appendChild(u);
+        }
+        cell.appendChild(counts);
+      }
+      grid.appendChild(cell);
+    }
+
+    el('calTotals').innerHTML =
+      '이번 기록 <b>'+activeDays+'일</b> · 턱걸이 총 <b>'+monthPullup+'개</b> · 팔굽혀펴기 총 <b>'+monthPushup+'개</b>';
+  }
+
+  function renderAll(){
+    renderToday();
+    renderSettings();
+    renderCalendar();
+  }
+
+  function touch(){
+    state.updatedAt = Date.now();
+    saveLocal();
+    scheduleCloudSave();
+  }
+
+  function addCount(ex, amt){
+    const today = todayStr();
+    const log = getLog(today);
+    log[ex] = Math.max(0, (log[ex]||0) + amt);
+    touch();
+    renderAll();
+  }
+
+  function showToast(msg){
+    const t = el('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(showToast._timer);
+    showToast._timer = setTimeout(()=>t.classList.remove('show'), 1600);
+  }
+
+  document.querySelectorAll('.btn-add').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const ex = btn.dataset.ex;
+      const amt = parseInt(btn.dataset.amt, 10);
+      addCount(ex, amt);
+      showToast((ex==='pullup'?'턱걸이 ':'팔굽혀펴기 ')+amt+'개 추가!');
+    });
+  });
+
+  document.querySelectorAll('.btn-custom').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const ex = btn.dataset.ex;
+      const label = ex==='pullup' ? '턱걸이' : '팔굽혀펴기';
+      const val = prompt(label+' 몇 개 추가할까요?', '');
+      if(val === null) return;
+      const n = parseInt(val, 10);
+      if(!isNaN(n) && n !== 0){
+        addCount(ex, n);
+        showToast(label+' '+n+'개 추가!');
+      }
+    });
+  });
+
+  document.querySelectorAll('[data-reset]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const ex = btn.dataset.ex;
+      const label = ex==='pullup' ? '턱걸이' : '팔굽혀펴기';
+      if(confirm('오늘의 '+label+' 기록을 지울까요?')){
+        const log = getLog(todayStr());
+        log[ex] = 0;
+        touch();
+        renderAll();
+      }
+    });
+  });
+
+  el('calPrev').addEventListener('click', ()=>{
+    calendarDate.setMonth(calendarDate.getMonth()-1);
+    renderCalendar();
+  });
+  el('calNext').addEventListener('click', ()=>{
+    if(el('calNext').disabled) return;
+    calendarDate.setMonth(calendarDate.getMonth()+1);
+    renderCalendar();
+  });
+
+  el('reminderTime').addEventListener('change', (e)=>{
+    state.reminderTime = e.target.value;
+    touch();
+  });
+
+  el('notifSwitch').addEventListener('click', async ()=>{
+    if(!state.reminderEnabled){
+      if(!('Notification' in window)){
+        showToast('이 브라우저는 알림을 지원하지 않아요');
+        return;
+      }
+      let perm = Notification.permission;
+      if(perm === 'default'){
+        perm = await Notification.requestPermission();
+      }
+      if(perm !== 'granted'){
+        showToast('알림 권한이 필요해요');
+        return;
+      }
+      state.reminderEnabled = true;
+      showToast('알림이 켜졌어요');
+    } else {
+      state.reminderEnabled = false;
+      showToast('알림이 꺼졌어요');
+    }
+    touch();
+    renderSettings();
+  });
+
+  function checkReminder(){
+    if(!state.reminderEnabled) return;
+    if(!('Notification' in window) || Notification.permission !== 'granted') return;
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2,'0');
+    const mm = String(now.getMinutes()).padStart(2,'0');
+    const current = hh+':'+mm;
+    const today = todayStr(now);
+    if(current === state.reminderTime && state.lastNotifiedDate !== today){
+      const log = state.logs[today];
+      const hasAny = log && (log.pullup > 0 || log.pushup > 0);
+      if(!hasAny){
+        try{
+          new Notification('오늘 아직 기록이 없어요 💪', {
+            body: '턱걸이나 팔굽혀펴기, 한 세트만 적어볼까요?',
+            tag: 'fittrack-reminder'
+          });
+        }catch(e){}
+      }
+      state.lastNotifiedDate = today;
+      touch();
+    }
+  }
+  setInterval(checkReminder, 20000);
+  checkReminder();
+
+  setInterval(()=>{ renderAll(); }, 60000);
+
+  renderAll();
+
+  // ---- cross-device sync via db capability ----
+  let cloudDoc = null;
+  let cloudSaveTimer = null;
+
+  function setSyncStatus(on, text){
+    el('syncDot').classList.toggle('on', on);
+    el('syncText').textContent = text;
+  }
+
+  function scheduleCloudSave(){
+    if(!cloudDoc) return;
+    clearTimeout(cloudSaveTimer);
+    cloudSaveTimer = setTimeout(()=>{
+      cloudDoc.set(state).catch(()=>{});
+    }, 700);
+  }
+
+  async function initSync(){
+    if(!window.claude || typeof window.claude.use !== 'function'){
+      setSyncStatus(false, '이 기기에만 저장돼요');
+      return;
+    }
+    let db, user;
+    try{ db = await window.claude.use('db'); }catch(e){ db = null; }
+    try{ user = await window.claude.use('user'); }catch(e){ user = null; }
+
+    if(!db || !user){
+      setSyncStatus(false, '이 기기에만 저장돼요');
+      return;
+    }
+
+    let uid = null;
+    try{ uid = await user.id(); }catch(e){ uid = null; }
+
+    if(!uid){
+      setSyncStatus(false, '로그인하면 다른 기기와 동기화돼요');
+      return;
+    }
+
+    try{
+      cloudDoc = db.doc('data/users/'+uid+'/fittrack');
+      const snap = await cloudDoc.get();
+      if(snap.exists){
+        const remote = normalize(snap.data());
+        if((remote.updatedAt||0) > (state.updatedAt||0)){
+          state = remote;
+          saveLocal();
+          renderAll();
+        } else if((state.updatedAt||0) > (remote.updatedAt||0)){
+          cloudDoc.set(state).catch(()=>{});
+        }
+      } else {
+        cloudDoc.set(state).catch(()=>{});
+      }
+
+      cloudDoc.onSnapshot((snap)=>{
+        if(!snap.exists) return;
+        const remote = normalize(snap.data());
+        if((remote.updatedAt||0) > (state.updatedAt||0)){
+          state = remote;
+          saveLocal();
+          renderAll();
+        }
+      }, (err)=>{
+        setSyncStatus(false, '동기화 연결이 끊겼어요');
+      });
+
+      setSyncStatus(true, '같은 계정 기기와 자동 동기화 중');
+    }catch(e){
+      setSyncStatus(false, '이 기기에만 저장돼요');
+    }
+  }
+
+  initSync();
+})();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
+}
+</script>
+</body>
+</html>
