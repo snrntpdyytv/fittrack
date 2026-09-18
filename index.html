@@ -392,14 +392,71 @@
   @media (max-width:340px){
     .btn-add{width:48px;}
   }
-</style>
 
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#F5F5F1">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<link rel="apple-touch-icon" href="icon-192.png">
+  .sets{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:12px;
+  }
+  .set-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  .set-input{
+    width:92px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:10px 12px;
+    font-family:var(--font-display);
+    font-size:18px;
+    font-weight:700;
+    text-align:right;
+    color:var(--ink);
+    background:var(--surface);
+    outline:none;
+  }
+  .card.pullup .set-input:focus{border-color:var(--pullup);}
+  .card.pushup .set-input:focus{border-color:var(--pushup);}
+  .btn-save-sets{
+    border:none;
+    border-radius:10px;
+    padding:10px 13px;
+    font-family:var(--font-body);
+    font-weight:700;
+    font-size:14px;
+    color:#fff;
+    background:var(--ink);
+    cursor:pointer;
+  }
+  .detail-toggle{
+    width:100%;
+    margin-top:6px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    border-radius:9px;
+    padding:5px 7px;
+    font-size:9.5px;
+    color:var(--ink-soft);
+    cursor:pointer;
+  }
+  .day-detail{
+    display:none;
+    margin-top:5px;
+    padding:5px;
+    border-radius:7px;
+    background:var(--surface-2);
+    font-size:8.5px;
+    line-height:1.3;
+    color:var(--ink-soft);
+  }
+  .day-detail.open{display:block;}
+
+</style>
 </head>
 <body>
 <div class="app">
@@ -418,20 +475,24 @@
       </div>
       <div class="compare-row">
         <div class="compare-col yesterday">
-          <span class="cl">어제</span>
+          <span class="cl">어제 총합</span>
           <span class="cv" id="pullupYesterday">0</span>
         </div>
         <div class="arrow-sep">→</div>
         <div class="compare-col today">
-          <span class="cl">오늘</span>
+          <span class="cl">오늘 총합</span>
           <span class="cv" id="pullupToday">0</span>
         </div>
       </div>
+      <div class="sets" id="pullupSets">
+        <div class="set-row"><span>1세트</span><input class="set-input" inputmode="numeric" type="number" min="0" step="1" data-ex="pullup" data-set="0" placeholder="0"></div>
+        <div class="set-row"><span>2세트</span><input class="set-input" inputmode="numeric" type="number" min="0" step="1" data-ex="pullup" data-set="1" placeholder="0"></div>
+        <div class="set-row"><span>3세트</span><input class="set-input" inputmode="numeric" type="number" min="0" step="1" data-ex="pullup" data-set="2" placeholder="0"></div>
+        <div class="set-row"><span>4세트</span><input class="set-input" inputmode="numeric" type="number" min="0" step="1" data-ex="pullup" data-set="3" placeholder="0"></div>
+      </div>
       <div class="actions">
-        <button class="btn-add" data-ex="pullup" data-amt="1">+1</button>
-        <button class="btn-add" data-ex="pullup" data-amt="3">+3</button>
-        <button class="btn-add" data-ex="pullup" data-amt="5">+5</button>
-        <button class="btn-custom" data-ex="pullup" data-custom="1">직접</button>
+        <button class="btn-save-sets" data-ex="pullup">오늘 세트 저장</button>
+        <button class="btn-custom" data-ex="pullup" data-custom="1">총합 직접</button>
       </div>
       <button class="btn-reset" data-ex="pullup" data-reset="1">오늘 기록 지우기</button>
     </div>
@@ -443,20 +504,24 @@
       </div>
       <div class="compare-row">
         <div class="compare-col yesterday">
-          <span class="cl">어제</span>
+          <span class="cl">어제 총합</span>
           <span class="cv" id="pushupYesterday">0</span>
         </div>
         <div class="arrow-sep">→</div>
         <div class="compare-col today">
-          <span class="cl">오늘</span>
+          <span class="cl">오늘 총합</span>
           <span class="cv" id="pushupToday">0</span>
         </div>
       </div>
+      <div class="sets" id="pushupSets">
+        <div class="set-row"><span>1세트</span><input class="set-input" inputmode="numeric" type="number" min="0" step="1" data-ex="pushup" data-set="0" placeholder="0"></div>
+        <div class="set-row"><span>2세트</span><input class="set-input" inputmode="numeric" type="number" min="0" step="1" data-ex="pushup" data-set="1" placeholder="0"></div>
+        <div class="set-row"><span>3세트</span><input class="set-input" inputmode="numeric" type="number" min="0" step="1" data-ex="pushup" data-set="2" placeholder="0"></div>
+        <div class="set-row"><span>4세트</span><input class="set-input" inputmode="numeric" type="number" min="0" step="1" data-ex="pushup" data-set="3" placeholder="0"></div>
+      </div>
       <div class="actions">
-        <button class="btn-add" data-ex="pushup" data-amt="5">+5</button>
-        <button class="btn-add" data-ex="pushup" data-amt="10">+10</button>
-        <button class="btn-add" data-ex="pushup" data-amt="20">+20</button>
-        <button class="btn-custom" data-ex="pushup" data-custom="1">직접</button>
+        <button class="btn-save-sets" data-ex="pushup">오늘 세트 저장</button>
+        <button class="btn-custom" data-ex="pushup" data-custom="1">총합 직접</button>
       </div>
       <button class="btn-reset" data-ex="pushup" data-reset="1">오늘 기록 지우기</button>
     </div>
@@ -497,7 +562,7 @@
           <button class="switch" id="notifSwitch"><span class="knob"></span></button>
         </div>
         <input type="time" id="reminderTime" value="19:00">
-        <p class="note">설정한 시각까지 오늘 기록이 하나도 없으면 알림을 보내드려요. 이 페이지 탭이 열려 있을 때만 동작하니, 알림을 받으려면 탭을 켜두는 걸 추천해요.</p>
+        <p class="note">설정한 시각까지 오늘 기록이 하나도 없으면 알림을 보내드려요. 현재 웹앱에서는 페이지가 실행 중일 때 알림이 동작해요.</p>
       </div>
 
       <div class="setting-row">
@@ -567,9 +632,19 @@
   }
 
   function getLog(dateStr){
-    if(!state.logs[dateStr]) state.logs[dateStr] = { pullup:0, pushup:0 };
-    return state.logs[dateStr];
+    if(!state.logs[dateStr]) state.logs[dateStr] = { pullup:[0,0,0,0], pushup:[0,0,0,0] };
+    const log = state.logs[dateStr];
+    for(const ex of ['pullup','pushup']){
+      if(!Array.isArray(log[ex])){
+        const n = Number(log[ex]) || 0;
+        log[ex] = [n,0,0,0];
+      }
+      while(log[ex].length < 4) log[ex].push(0);
+      log[ex] = log[ex].slice(0,4).map(v => Math.max(0, Number(v)||0));
+    }
+    return log;
   }
+  function total(ex, log){ return (log && Array.isArray(log[ex])) ? log[ex].reduce((a,b)=>a+b,0) : 0; }
 
   function renderChip(elId, yesterday, today){
     const chip = el(elId);
@@ -602,14 +677,19 @@
     const tLog = getLog(today);
     const yLog = state.logs[yestStr] || null;
 
-    el('pullupToday').textContent = tLog.pullup;
-    el('pullupYesterday').textContent = yLog ? yLog.pullup : 0;
-    renderChip('pullupChip', yLog ? yLog.pullup : null, tLog.pullup);
+    for(const ex of ['pullup','pushup']){
+      const tTotal = total(ex, tLog);
+      const yTotal = yLog ? total(ex, yLog) : 0;
+      el(ex+'Today').textContent = tTotal;
+      el(ex+'Yesterday').textContent = yTotal;
+      renderChip(ex+'Chip', yLog ? yTotal : null, tTotal);
 
-    el('pushupToday').textContent = tLog.pushup;
-    el('pushupYesterday').textContent = yLog ? yLog.pushup : 0;
-    renderChip('pushupChip', yLog ? yLog.pushup : null, tLog.pushup);
+      document.querySelectorAll('.set-input[data-ex="'+ex+'"]').forEach((input, i)=>{
+        input.value = tLog[ex][i] || '';
+      });
+    }
   }
+
 
   function renderSettings(){
     el('reminderTime').value = state.reminderTime;
@@ -643,7 +723,8 @@
     for(let day=1; day<=daysInMonth; day++){
       const d = new Date(y, m, day);
       const ds = todayStr(d);
-      const log = state.logs[ds];
+      const raw = state.logs[ds];
+      const log = raw ? getLog(ds) : null;
       const cell = document.createElement('div');
       cell.className = 'cal-cell';
       if(ds === todayStr(now)) cell.classList.add('today');
@@ -653,26 +734,46 @@
       dnum.textContent = day;
       cell.appendChild(dnum);
 
-      if(log && (log.pullup > 0 || log.pushup > 0)){
-        cell.classList.add('has-log');
-        activeDays++;
-        monthPullup += log.pullup;
-        monthPushup += log.pushup;
-        const counts = document.createElement('div');
-        counts.className = 'dcounts';
-        if(log.pullup > 0){
-          const p = document.createElement('span');
-          p.className = 'p';
-          p.textContent = log.pullup;
-          counts.appendChild(p);
+      if(log){
+        const pt = total('pullup', log), ut = total('pushup', log);
+        if(pt > 0 || ut > 0){
+          cell.classList.add('has-log');
+          activeDays++;
+          monthPullup += pt;
+          monthPushup += ut;
+
+          const counts = document.createElement('div');
+          counts.className = 'dcounts';
+          if(pt > 0){
+            const p = document.createElement('span');
+            p.className = 'p';
+            p.textContent = pt;
+            counts.appendChild(p);
+          }
+          if(ut > 0){
+            const u = document.createElement('span');
+            u.className = 'u';
+            u.textContent = ut;
+            counts.appendChild(u);
+          }
+          cell.appendChild(counts);
+
+          const toggle = document.createElement('button');
+          toggle.className = 'detail-toggle';
+          toggle.textContent = '세트 보기';
+          const detail = document.createElement('div');
+          detail.className = 'day-detail';
+          detail.innerHTML =
+            '<b>턱걸이</b> '+log.pullup.join(' · ')+'<br>'+
+            '<b>팔굽혀펴기</b> '+log.pushup.join(' · ');
+          toggle.addEventListener('click', (e)=>{
+            e.stopPropagation();
+            detail.classList.toggle('open');
+            toggle.textContent = detail.classList.contains('open') ? '세트 닫기' : '세트 보기';
+          });
+          cell.appendChild(toggle);
+          cell.appendChild(detail);
         }
-        if(log.pushup > 0){
-          const u = document.createElement('span');
-          u.className = 'u';
-          u.textContent = log.pushup;
-          counts.appendChild(u);
-        }
-        cell.appendChild(counts);
       }
       grid.appendChild(cell);
     }
@@ -680,6 +781,7 @@
     el('calTotals').innerHTML =
       '이번 기록 <b>'+activeDays+'일</b> · 턱걸이 총 <b>'+monthPullup+'개</b> · 팔굽혀펴기 총 <b>'+monthPushup+'개</b>';
   }
+
 
   function renderAll(){
     renderToday();
@@ -709,12 +811,17 @@
     showToast._timer = setTimeout(()=>t.classList.remove('show'), 1600);
   }
 
-  document.querySelectorAll('.btn-add').forEach(btn=>{
+  document.querySelectorAll('.btn-save-sets').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       const ex = btn.dataset.ex;
-      const amt = parseInt(btn.dataset.amt, 10);
-      addCount(ex, amt);
-      showToast((ex==='pullup'?'턱걸이 ':'팔굽혀펴기 ')+amt+'개 추가!');
+      const today = todayStr();
+      const log = getLog(today);
+      document.querySelectorAll('.set-input[data-ex="'+ex+'"]').forEach((input,i)=>{
+        log[ex][i] = Math.max(0, parseInt(input.value,10) || 0);
+      });
+      touch();
+      renderAll();
+      showToast((ex==='pullup'?'턱걸이':'팔굽혀펴기')+' 4세트 저장!');
     });
   });
 
@@ -722,15 +829,19 @@
     btn.addEventListener('click', ()=>{
       const ex = btn.dataset.ex;
       const label = ex==='pullup' ? '턱걸이' : '팔굽혀펴기';
-      const val = prompt(label+' 몇 개 추가할까요?', '');
+      const val = prompt(label+' 총합을 직접 입력할까요?\\n(세트 기록은 1세트에 저장됩니다.)', '');
       if(val === null) return;
       const n = parseInt(val, 10);
-      if(!isNaN(n) && n !== 0){
-        addCount(ex, n);
-        showToast(label+' '+n+'개 추가!');
+      if(!isNaN(n) && n >= 0){
+        const log = getLog(todayStr());
+        log[ex] = [n,0,0,0];
+        touch();
+        renderAll();
+        showToast(label+' '+n+'개 저장!');
       }
     });
   });
+
 
   document.querySelectorAll('[data-reset]').forEach(btn=>{
     btn.addEventListener('click', ()=>{
@@ -738,7 +849,7 @@
       const label = ex==='pullup' ? '턱걸이' : '팔굽혀펴기';
       if(confirm('오늘의 '+label+' 기록을 지울까요?')){
         const log = getLog(todayStr());
-        log[ex] = 0;
+        log[ex] = [0,0,0,0];
         touch();
         renderAll();
       }
@@ -797,8 +908,8 @@
       const hasAny = log && (log.pullup > 0 || log.pushup > 0);
       if(!hasAny){
         try{
-          new Notification('오늘 아직 기록이 없어요 💪', {
-            body: '턱걸이나 팔굽혀펴기, 한 세트만 적어볼까요?',
+          new Notification('오늘 운동할 시간이에요 💪', {
+            body: '턱걸이·팔굽혀펴기 4세트 기록을 남겨볼까요?',
             tag: 'fittrack-reminder'
           });
         }catch(e){}
@@ -889,12 +1000,6 @@
 
   initSync();
 })();
-</script>
-
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
-}
 </script>
 </body>
 </html>
